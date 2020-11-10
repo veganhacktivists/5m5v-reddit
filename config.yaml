@@ -1,0 +1,32 @@
+mysql_host: localhost
+mysql_user: default
+mysql_password: secret
+mysql_database: default
+
+topics: # all text will be lowercased before matching so everything is case insensitive and lowercase.
+  # environment
+  emissions: (carbon|co2|methane|ch4|transport).*(emission)|(emission).*(carbon|co2|methane|ch4|transport)
+  farming: (crop).*(plant)|(plant).*(crop)|(regener|soy).*(farming)|(farming).*(regener|soy)|([(de)|(rain)]forest).*([(de)|(rain)]forest)
+  biodiversity: (palm).*(oil)|(specie).*(extinct)|(habitat).*(destruct)
+  plastic: (zero\s*waste)|plastic
+  climate change: regex
+  lifestyle: zerowaste plastic cars biking health local meat diet vegan plant-based carbon footprint
+  fresh water: regex
+  # fashion
+  leather: regex
+  wool: regex
+  winter: regex
+  biodegradable: regex
+  # ethics
+  humane slaughter: regex
+  clean meat: regex
+  free range: regex
+  dairy: regex
+  eggs: regex
+  dog meat: regex
+  cows: regex
+  sheep: regex
+  chickens: regex
+  intelligence: regex
+  sentience: regex
+  # health
