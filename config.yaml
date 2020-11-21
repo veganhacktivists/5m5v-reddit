@@ -3,6 +3,13 @@ mysql_user: default
 mysql_password: secret
 mysql_database: default
 
+subreddit_list:
+  - Aww
+  - AskReddit
+  - ZeroWaste
+  - Politics
+  - worldnews
+
 topics: # all text will be lowercased before matching so everything is case insensitive and lowercase.
   # environment
   emissions: (carbon|co2|methane|ch4|transport).*(emission)|(emission).*(carbon|co2|methane|ch4|transport)
