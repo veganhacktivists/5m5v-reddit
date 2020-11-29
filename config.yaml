@@ -4,21 +4,20 @@ mysql_password: secret
 mysql_database: default
 
 subreddit_list:
-  - Aww
-  - AskReddit
   - ZeroWaste
-  - Politics
-  - worldnews
+  - environment
+  - Aww
 
 topics: # all text will be lowercased before matching so everything is case insensitive and lowercase.
   # environment
-  emissions: (carbon|co2|methane|ch4|transport).*(emission)|(emission).*(carbon|co2|methane|ch4|transport)
-  farming: (crop).*(plant)|(plant).*(crop)|(regener|soy).*(farming)|(farming).*(regener|soy)|([(de)|(rain)]forest).*([(de)|(rain)]forest)
+  emissions: (carbon|(carbon\s*dioxide)|(co2)|(methane)|(ch4)|(transport)).*(emission)|(emission).*(carbon|(carbon\s*dioxide)|(co2)|(methane)|(ch4)|(transport))|(greenhouse gas)
+  farming: (crop).*(plant)|(plant).*(crop)|((regener)|(soy)).*(farming)|(farming).*((regener)|(soy))|([(de)|(rain)](forest)).*([(de)|(rain)](forest))
   biodiversity: (palm).*(oil)|(specie).*(extinct)|(habitat).*(destruct)
   plastic: (zero\s*waste)|plastic
   climate change: regex
   lifestyle: zerowaste plastic cars biking health local meat diet vegan plant-based carbon footprint
   fresh water: regex
+  meat: (meat)|(vegan)
   # fashion
   leather: regex
   wool: regex
@@ -31,9 +30,10 @@ topics: # all text will be lowercased before matching so everything is case inse
   dairy: regex
   eggs: regex
   dog meat: regex
-  cows: regex
-  sheep: regex
-  chickens: regex
+  pigs: pig
+  cows: cow
+  sheep: sheep
+  chickens: chicken
   intelligence: regex
   sentience: regex
   # health
