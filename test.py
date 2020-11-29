@@ -28,9 +28,6 @@ class MyTestCase(unittest.TestCase):
         self.display_table("reddit")
         self.display_table("reddit_comments")
 
-    def test_display(self):
-        self.display_table("reddit")
-        self.display_table("reddit_comments")
 
 if __name__ == '__main__':
     unittest.main()
