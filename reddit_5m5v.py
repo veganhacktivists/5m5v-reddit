@@ -5,6 +5,8 @@ import re
 from datetime import datetime
 import random
 
+# TODO: remove SQL syntax things and replace with mysql methods where possible
+
 class Reddit5m5v:
     def __init__(self, bot_name, database, verbose=True, test=False):
         self.config = self._load_config()
@@ -47,7 +49,7 @@ class Reddit5m5v:
         subreddit = submission.subreddit.display_name
         submission_id = submission.id
         submission_link = submission.permalink
-        submission_text = submission.selftext.replace("'", "\\'")
+        submission_text = submission.selftext.replace("'", "\\'") # TODO: figure out how images are handled and how we can get access to image URL
 
         if self.verbose:
             print(f"Entering new submission from r/{subreddit}: {title}")
@@ -58,6 +60,7 @@ class Reddit5m5v:
                 (submission_id, title, text, votes, comments, subreddit, link)
                 VALUES ('{submission_id}', '{title}', '{submission_text}', {votes}, {comments}, '{subreddit}',
             '{submission_link}');"""
+        # TODO: add automatic created and updated timestamps on laravel migration
 
 
         self.database_cursor.execute(sql)
@@ -135,7 +138,6 @@ class Reddit5m5v:
             print(f"Updated {self.submission_table_name} for r/{submission.subreddit.display_name}:"
                   f" {submission.title}")
 
-        if self.verbose:
             print(f"Updating topics for r/{submission.subreddit.display_name}: {submission.title}")
 
         submission_topics = self.get_submission_topics(submission)

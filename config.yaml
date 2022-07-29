@@ -1,39 +1,41 @@
-mysql_host: localhost
-mysql_user: default
+mysql_host: 127.0.0.1
+mysql_user: root
 mysql_password: secret
-mysql_database: default
+mysql_database: 5m5v
 
 subreddit_list:
   - ZeroWaste
+  - Science
   - environment
-  - Aww
+#  - Aww
 
 topics: # all text will be lowercased before matching so everything is case insensitive and lowercase.
   # environment
-  emissions: (carbon|(carbon\s*dioxide)|(co2)|(methane)|(ch4)|(transport)).*(emission)|(emission).*(carbon|(carbon\s*dioxide)|(co2)|(methane)|(ch4)|(transport))|(greenhouse gas)
-  farming: (crop).*(plant)|(plant).*(crop)|((regener)|(soy)).*(farming)|(farming).*((regener)|(soy))|([(de)|(rain)](forest)).*([(de)|(rain)](forest))
-  biodiversity: (palm).*(oil)|(specie).*(extinct)|(habitat).*(destruct)
-  plastic: (zero\s*waste)|plastic
-  climate change: regex
-  lifestyle: zerowaste plastic cars biking health local meat diet vegan plant-based carbon footprint
-  fresh water: regex
+  emissions: (carbon|(carbon\s*dioxide)|(co2)|(methane)|(ch4)|(transport)).*(emission)|(emission).*(carbon|(carbon\s*dioxide)|(co2)|(methane)|(ch4)|(transport))|(greenhouse gas)|(fossil).*(fuels)|(fossil).*(fuel)
+  farming: (crop).*(plant)|(plant).*(crop)|((regener)|(soy)).*(farming)|(farming).*((regener)|(soy))|([(de)|(rain)](forest)).*([(de)|(rain)](forest))|(animal).*(agriculture)|(livestock)
+  biodiversity: (palm).*(oil)|(specie).*(extinct)|(habitat).*(destruct)|(extinct)
+  plastic: (zero\s*waste)|(plastic)
+  climate change: (climate).*(change)|(global).*(warming)|(ipcc)
+  lifestyle: (zero\s*waste)|(plastic)|(fossil).*(fuels)|(fossil).*(fuel)|(sustainable)|(cars)|(biking)|(plant).*(based)|(vegan)|(vegetarian)|(meat)
+  fresh water: (drought)
+  ocean: (ocean).*(dead).*((zones)|(zone))|(seaspiracy)|(whale)|(whales)|(dolphin)|(dolphins)|(sea).*(food)|(fish)|(fishing)|(overfishing)|(bycatch)|(by).*(catch)|(turtles)
   meat: (meat)|(vegan)
   # fashion
-  leather: regex
-  wool: regex
-  winter: regex
-  biodegradable: regex
+  leather: (leather)|(vegan).*(leather)
+  wool: (wool)
+  down: (down).*((duvet)|(jacket)|(coat))
+  biodegradable: (biodegradable).*((wool)|(leather)|(vegan)|(plastic))
   # ethics
   humane slaughter: regex
   clean meat: regex
   free range: regex
-  dairy: regex
-  eggs: regex
-  dog meat: regex
-  pigs: pig
-  cows: cow
-  sheep: sheep
-  chickens: chicken
+  dairy: (dairy)|(/sveal/s)|(milk)|(cheese)
+  eggs: (eggs)|(ommelette)
+  dog meat: (yulin)|(dog).*(meat).*(festival)
+  pigs: (pig)|(pigs)
+  cows: (cow)|(cows)
+  sheep: (sheep)
+  chickens: (chicken)
   intelligence: regex
   sentience: regex
   # health
