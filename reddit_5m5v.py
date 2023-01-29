@@ -37,8 +37,8 @@ class Reddit5m5v:
             print(row)
 
     def check_table_for_rows(self, table, submission):
-        sql = f"select * from {table} where submission_id = '{submission.id}'"
-        self.database_cursor.execute(sql)
+        sql = f"select * from {table} where submission_id = %s"
+        self.database_cursor.execute(sql, (submission.id,))
         rows = [i for i in self.database_cursor.fetchall()]
         return len(rows) >= 0
 
@@ -58,12 +58,14 @@ class Reddit5m5v:
         sql = f"""
             INSERT INTO {self.submission_table_name} 
                 (submission_id, title, text, votes, comments, subreddit, link)
-                VALUES ('{submission_id}', '{title}', '{submission_text}', {votes}, {comments}, '{subreddit}',
-            '{submission_link}');"""
+                VALUES (%s, %s, %s, %s, %s, %s, %s);"""
+        # TODO: prevent sql injection
         # TODO: add automatic created and updated timestamps on laravel migration
 
 
-        self.database_cursor.execute(sql)
+        self.database_cursor.execute(
+            sql,
+            (submission_id, title, submission_text, votes, comments, subreddit, submission_link))
         self.database.commit()
 
         if self.verbose:
@@ -80,25 +82,25 @@ class Reddit5m5v:
         if self.verbose:
             print(f"Writing new topic: {topic}")
 
+        comment_body = None
+        random_comment_id = None
+        comment_url = None
+        comment_score = None
         if len(comments) > 0:
             random_comment = random.sample(comments, 1)
             comment_body = random_comment.body.replace("'", "\\'")
-            sql = f"""
-            INSERT INTO {self.topics_comments_table} 
-                (submission_id, example_comment_id, topic, num_comments, comment_text, comment_link, votes)
-            VALUES
-                ('{submission_id}', '{random_comment.id}', '{topic}', {len(comments)}, 
-            '{comment_body}', '{self.get_comment_url(random_comment)}', {random_comment.score})
-                            """
-        else:
-            sql = f"""
-            INSERT INTO {self.topics_comments_table} 
-                (submission_id, example_comment_id, topic, num_comments, comment_text, comment_link, votes)
-            VALUES
-                ('{submission_id}', null, '{topic}', {len(comments)}, 
-            null, null, null)
-            """
-        self.database_cursor.execute(sql)
+            random_comment_id = random_comment.id
+            comment_url = self.get_comment_url(random_comment)
+            comment_score = random_comment.score
+        sql = f"""
+        INSERT INTO {self.topics_comments_table} 
+            (submission_id, example_comment_id, topic, num_comments, comment_text, comment_link, votes)
+        VALUES
+            (%s, %s, %s, %s, %s, %s, %s)"""
+        self.database_cursor.execute(
+            sql, (submission_id, random_comment_id, topic, len(comments), comment_body, comment_url, comment_score))
+
+        #TODO: does this work?
         self.database.commit()
 
         self.display_table(self.topics_comments_table)
@@ -142,9 +144,10 @@ class Reddit5m5v:
 
         submission_topics = self.get_submission_topics(submission)
 
-        sql = f"select distinct * from {self.topics_comments_table} where submission_id = '{submission_id}';"
+        sql = f"select distinct * from {self.topics_comments_table} where submission_id = %s"
+        # TODO: prevent sql injection for submission id, not for tpics comments table, that is not user input
 
-        self.database_cursor.execute(sql)
+        self.database_cursor.execute(sql, (submission.id,))
         self.database.commit()
 
         row = {}
@@ -165,10 +168,10 @@ class Reddit5m5v:
                         votes = {votes},
                         num_comments = {len(submission_topics[row["topic"]])}
                     WHERE submission_id = '{submission_id}'
-                          and topic = '{row["topic"]}'
-                          and comment_id = '{row["example_comment_id"]}';"""
+                          and topic = %s
+                          and comment_id = '{row["example_comment_id"]}'""" #TODO: prevent sql injection for topic
 
-                self.database_cursor.execute(sql)
+                self.database_cursor.execute(sql, (row["topic"], ))
                 self.database.commit()
 
                 if self.verbose:
@@ -183,15 +186,16 @@ class Reddit5m5v:
                     SET
                         example_comment_id = '{random_comment.id}',
                         num_comments = {len(submission_topics[row["topics"]])},
-                        comment_text = '{random_comment.body}',
+                        comment_text = %s,
                         comment_link = '{self.get_comment_url(random_comment)}',
                         votes = {random_comment.score}
                     WHERE
                         submission_id = '{submission_id}'
-                        and topic = '{row["topic"]}'
+                        and topic = %s'
                         """
+                # TODO: prevent sql injection for comment text, topic
 
-                self.database_cursor.execute(sql)
+                self.database_cursor.execute(sql, (random_comment.body, row["topic"],))
                 self.database.commit()
 
                 if self.verbose:
@@ -287,12 +291,12 @@ class Reddit5m5v:
             print(logged_submissions)
             submission_topics = self.check_submission_topics(submission)
 
+            sql = f"select distinct submission_id from {self.submission_table_name}"
 
             if submission_topics:
                 # if valid, add to list
                 if submission.id not in logged_submissions:
                     self.new_submission(submission)
-                sql = f"select distinct submission_id from {self.submission_table_name}"
                 self.database_cursor.execute(sql)
                 logged_submissions = [i[0] for i in self.database_cursor.fetchall()]
 
@@ -307,7 +311,6 @@ class Reddit5m5v:
                 elif s not in logged_submissions:
                     self.new_submission(displayed_submission)
 
-                sql = f"select distinct submission_id from {self.submission_table_name}"
                 self.database_cursor.execute(sql)
                 logged_submissions = [i[0] for i in self.database_cursor.fetchall()]
             if self.test:

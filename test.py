@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
     cursor = mydb.cursor()
 
     def display_table(self, table_name):
-        sql = f"select * from {table_name};"
+        sql = f"SELECT * FROM {table_name}"
         MyTestCase.cursor.execute(sql)
         for row in MyTestCase.cursor.fetchall():
             print(row)
