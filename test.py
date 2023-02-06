@@ -14,13 +14,55 @@ class MyTestCase(unittest.TestCase):
         password=config["mysql_password"],
         database=config["mysql_database"])
 
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(buffered=True)
 
     def display_table(self, table_name):
         sql = f"SELECT * FROM {table_name}"
         MyTestCase.cursor.execute(sql)
         for row in MyTestCase.cursor.fetchall():
             print(row)
+
+    def test_sql_injection(self):
+        sql = '''CREATE TABLE EMPLOYEE(
+           FIRST_NAME CHAR(20) NOT NULL,
+           LAST_NAME CHAR(20),
+           AGE INT,
+           SEX CHAR(1),
+           INCOME FLOAT
+        )'''
+
+        MyTestCase.cursor.execute("DROP TABLE IF EXISTS EMPLOYEE")
+        MyTestCase.cursor.execute(sql)
+
+        first_name = "--;"
+        last_name = "sailor"
+        age = 60
+        sex = "F"
+        income = 60000
+        sql = f"""
+            INSERT INTO EMPLOYEE 
+            (FIRST_NAME, LAST_NAME, AGE, SEX, INCOME)
+            VALUES (%s, %s, %s, %s, %s)"""
+
+        MyTestCase.cursor.execute(
+            sql,
+            (first_name, last_name, age, sex, income))
+        MyTestCase.mydb.commit()
+
+        self.display_table("EMPLOYEE")
+
+        bad_sql = f"""
+            INSERT INTO EMPLOYEE 
+            (FIRST_NAME, LAST_NAME, AGE, SEX, INCOME)
+            VALUES ({first_name}, {last_name}, {age}, {sex}, {income})"""
+
+        MyTestCase.cursor.execute(
+            bad_sql)
+        MyTestCase.mydb.commit()
+
+        self.display_table("EMPLOYEE")
+
+        MyTestCase.cursor.execute("DROP TABLE IF EXISTS EMPLOYEE")
 
     def test_run(self):
         reddit = Reddit5m5v("veganactivismbot", MyTestCase.mydb, test=True)

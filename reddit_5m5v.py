@@ -59,7 +59,6 @@ class Reddit5m5v:
             INSERT INTO {self.submission_table_name} 
                 (submission_id, title, text, votes, comments, subreddit, link)
                 VALUES (%s, %s, %s, %s, %s, %s, %s);"""
-        # TODO: prevent sql injection
         # TODO: add automatic created and updated timestamps on laravel migration
 
 
@@ -100,7 +99,6 @@ class Reddit5m5v:
         self.database_cursor.execute(
             sql, (submission_id, random_comment_id, topic, len(comments), comment_body, comment_url, comment_score))
 
-        #TODO: does this work?
         self.database.commit()
 
         self.display_table(self.topics_comments_table)
